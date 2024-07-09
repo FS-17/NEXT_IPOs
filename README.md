@@ -15,10 +15,27 @@ NEXT IPO is a Flutter application designed to track and display information abou
 
 ## Screenshots
 
-<img src="/nextipos/assets/screen.png" alt="drawing" width="200"/>
+<img src="assets/screen.png" alt="drawing" width="200"/>
 
+## How It Works
 
-![screenshots of app](/nextipos/assets/screen.png) 
+1. **Web Scraping**: 
+   - The app uses web scraping techniques to fetch IPO data from the Saudi Exchange website.
+   - It manages cookies and sends HTTP requests to retrieve up-to-date information.
+
+2. **Data Processing**:
+   - Retrieved IPO data is parsed and formatted for display.
+   - The app handles various data fields such as company name, IPO ID, issue price, and offering dates.
+
+3. **User Interface**:
+   - IPOs are displayed in a staggered grid view with expandable cards.
+   - The app supports both light and dark themes for user comfort.
+
+4. **Customization**:
+   - Users can customize market selection and date ranges for IPO listings through the settings page.
+
+5. **State Management**:
+   - Utilizes a combination of StatefulWidget and Provider for efficient updates and a responsive UI.
 
 ## Getting Started
 
@@ -31,7 +48,7 @@ NEXT IPO is a Flutter application designed to track and display information abou
 
 #### APK
 
-[![Download APK](https://img.shields.io/badge/Download-APK-blue)](/nextipos/assets/app-release.apk)
+[![Download APK](https://img.shields.io/badge/Download-APK-blue)](assets/app-release.apk?raw=true)
 
 #### From Source
 
@@ -55,8 +72,6 @@ NEXT IPO is a Flutter application designed to track and display information abou
    flutter run
    ```
 
-
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
@@ -64,7 +79,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
 
 ## Acknowledgements
 
