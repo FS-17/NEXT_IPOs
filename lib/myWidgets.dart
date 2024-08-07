@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import 'consts.dart';
 import 'theme.dart';
 
 int? extendIndex;
@@ -46,14 +45,16 @@ class MyButton extends StatelessWidget {
   final Widget child;
   final double height;
   final double width;
+  final List<Color>? colors;
 
   const MyButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.child,
     this.height = 50,
     this.width = double.infinity,
-  }) : super(key: key);
+    this.colors,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +63,10 @@ class MyButton extends StatelessWidget {
       width: width,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: Theme.of(context).brightness == Brightness.light
-              ? AppTheme.lightButtonGradient
-              : AppTheme.darkButtonGradient,
+          colors: colors ??
+              (Theme.of(context).brightness == Brightness.light
+                  ? AppTheme.lightButtonGradient
+                  : AppTheme.darkButtonGradient),
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -76,7 +78,7 @@ class MyButton extends StatelessWidget {
                 : Colors.black26,
             spreadRadius: 1,
             blurRadius: 5,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -87,7 +89,7 @@ class MyButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           child: Center(
             child: DefaultTextStyle(
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,

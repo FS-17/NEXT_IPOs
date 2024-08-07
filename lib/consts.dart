@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,8 +14,8 @@ class ConstManager {
 
   // IPOs settings
   static String market = "All";
-  static DateTime fromDate = DateTime.now().subtract(Duration(days: 30));
-  static DateTime toDate = DateTime.now().add(Duration(days: 60));
+  static DateTime fromDate = DateTime.now().subtract(const Duration(days: 30));
+  static DateTime toDate = DateTime.now().add(const Duration(days: 60));
 
   // cookies
   static String fullCookie = "";
@@ -26,7 +25,7 @@ class ConstManager {
 
   // IPOs data
   static List<dynamic> ipoList = [];
-
+  static Map<int, List> banks = {};
   static void saveSettings() async {
     cashHelper.SavaData(key: "fullCookie", value: fullCookie);
     cashHelper.SavaData(key: "fullUrl", value: fullUrl);
@@ -47,7 +46,7 @@ class ConstManager {
       fullUrl = cashHelper.getData(key: "fullUrl");
     } catch (e) {
       if (userid == "") {
-        userid = Uuid().v1();
+        userid = const Uuid().v1();
         cashHelper.SavaData(key: "userid", value: userid);
         cashHelper.SavaData(key: "first_use", value: true);
       }

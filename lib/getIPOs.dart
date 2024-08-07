@@ -1,3 +1,6 @@
+// import 'dart:ffi';
+
+// import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -9,6 +12,22 @@ var url =
 var preurl = "https://www.saudiexchange.sa"; //real
 var endurl =
     "/p0/IZ7_5A602H80OOMQC0604RU6VD10F0=CZ6_5A602H80OO5JC0QFMU3NNK3852=NJgetALLListingDataId=/";
+
+// Alahli Capital, Al Rajhi Financial Company, Saudi Fransi Capital, Alinma Investment, Riyad Capital, Al Jazira Financial Markets Company, Investment Securities and Brokerage Company, Al Bilad Investment Company, Al-Arabi Financial Company, Al Awal Investment Company, Derayah Financial Company, yaqeen Capital, Alkhabeer Financial Company.
+Map<String, String> banks = {
+  "alahli": "assets/banks/snb.jpg",
+  "rajhi": "assets/banks/alr.jpg",
+  "fransi": "assets/banks/bsf.jpg",
+  "alinma": "assets/banks/ali.jpg",
+  "riyad": "assets/banks/rib.jpg",
+  "jazira": "assets/banks/alj.jpg",
+  "bilad": "assets/banks/alb.jpg",
+  "arabi": "assets/banks/anb.jpg",
+  "awal": "assets/banks/sab.jpg",
+  "snb": "assets/banks/snb.jpg",
+  "anb": "assets/banks/anb.jpg",
+  "arab": "assets/banks/anb.jpg",
+};
 
 void main() async {
   try {
@@ -44,9 +63,10 @@ Future<void> fetchIPOs() async {
       var data = jsonDecode(response.body); // Adjust the key as needed
 
       if (data.isNotEmpty) {
-        ConstManager.ipoList = data["ipoData"];
+        // ConstManager.ipoList = data["ipoData"] + data["tradableData"];
 
-        // ConstManager.ipoList = reFormat(data);
+        ConstManager.ipoList = linkImages(reFormat(data));
+        print("done");
       } else {
         ConstManager.ipoList = [
           {"companyName": "No IPOs found"}
@@ -125,15 +145,64 @@ bool isCookiesValid() {
   return true;
 }
 
-List<Map<String, dynamic>> reFormat(dynamic data) {
-  // if (data["tradableData"].isNotEmpty){
-  //   var tradableData = data["tradableData"];
-  //   tradableData.forEach((element) {
-  //       // change the key named offerPrice to {
-  //       element["issuePrice"] = element["offerPrice"];
-  //       element["ipoId"] = element["companyCode"];
-  //   });
+List<dynamic> reFormat(dynamic data) {
+  if (data["tradableData"].isNotEmpty) {
+    var tradableData = data["tradableData"];
+    tradableData.forEach((element) {
+      // change the key named offerPrice to {
+      element["issueprice"] = element["offerPrice"];
+      element["ipoId"] = element["companyCode"];
+      element["offeringDate"] = element["subscriptionFrom"];
+      element["closingDate"] = element["subscriptionTo"];
+      element["sharesOffer"] = element["offerSize"];
+    });
+  }
 
-  // }
-  return data["ipoData"];
+  return (data["ipoData"] + data["tradableData"]);
+}
+
+dynamic linkImages(dynamic ipoList) {
+  // it will add images of banks to the rcvBank ke
+
+  for (var element in ipoList) {
+    // if there is element["rcvBank"] and it is not empty
+    var banksList;
+    var newBanksList = [];
+
+    // if there is no rcvBank key using containsKey
+    if (!element.containsKey("rcvBank") ||
+        element["rcvBank"] == null ||
+        element["rcvBank"] == "") {
+      // print("empty");
+      newBanksList = [""];
+    } else {
+      if (element["rcvBank"] == "All Market Members") {
+        newBanksList = ["all banks"];
+      } else if (element["rcvBank"].contains(",")) {
+        banksList = element["rcvBank"].split(", ");
+      } else {
+        banksList = [element["rcvBank"]];
+      }
+
+      for (var bank in banksList) {
+        for (var key in banks.keys) {
+          if (bank.toLowerCase().contains(key)) {
+            newBanksList.add(banks[key]);
+            break;
+          }
+        }
+      }
+      if (newBanksList.isEmpty) {
+        newBanksList = [""];
+      }
+    }
+
+    int ipoId = element["ipoId"] is int
+        ? element["ipoId"]
+        : int.parse(element["ipoId"].toString());
+
+    ConstManager.banks[ipoId] = newBanksList;
+  }
+
+  return ipoList;
 }

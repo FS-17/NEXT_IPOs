@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    primaryColor: Color(0xFF3A5F9A),
-    primaryColorLight: Color(0xFF6D90C6),
-    primaryColorDark: Color(0xFF1A3A6C),
-    scaffoldBackgroundColor: Color(0xFFF5F7FA),
-    cardColor: Color(0xFFFFFFFF),
+    primaryColor: const Color(0xFF3A5F9A),
+    primaryColorLight: const Color(0xFF6D90C6),
+    primaryColorDark: const Color(0xFF1A3A6C),
+    scaffoldBackgroundColor: const Color(0xFFF5F7FA),
+    cardColor: const Color(0xFFFFFFFF),
     colorScheme: const ColorScheme.light(
       primary: Color(0xFF3A5F9A),
       secondary: Color(0xFFFFD700),
@@ -28,11 +28,11 @@ class AppTheme {
 
   static ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    primaryColor: Color.fromARGB(255, 225, 230, 246),
-    primaryColorLight: Color(0xFF36A8B0),
-    primaryColorDark: Color.fromARGB(255, 8, 43, 97),
-    scaffoldBackgroundColor: Color(0xFF121212),
-    cardColor: Color.fromARGB(255, 15, 20, 31),
+    primaryColor: const Color.fromARGB(255, 225, 230, 246),
+    primaryColorLight: const Color(0xFF36A8B0),
+    primaryColorDark: const Color.fromARGB(255, 8, 43, 97),
+    scaffoldBackgroundColor: const Color(0xFF121212),
+    cardColor: const Color.fromARGB(255, 15, 20, 31),
     colorScheme: const ColorScheme.dark(
       primary: Color(0xFF1A3A6C),
       secondary: Color(0xFFFFD700),
@@ -56,34 +56,34 @@ class AppTheme {
   );
 
   static List<Color> lightBackgroundGradient = [
-    Color(0xFFF5F7FA),
-    Color(0xFFE1E6F6),
-    Color(0xFFD1DBEF),
+    const Color(0xFFF5F7FA),
+    const Color(0xFFE1E6F6),
+    const Color(0xFFD1DBEF),
   ];
 
   static List<Color> darkBackgroundGradient = [
-    Color.fromARGB(255, 1, 4, 31),
-    Color.fromARGB(255, 11, 22, 41),
-    Color.fromARGB(255, 1, 4, 21),
+    const Color.fromARGB(255, 1, 4, 31),
+    const Color.fromARGB(255, 11, 22, 41),
+    const Color.fromARGB(255, 1, 4, 21),
   ];
 
   static List<Color> lightButtonGradient = [
-    Color(0xFF3A5F9A),
-    Color(0xFF1A3A6C),
+    const Color(0xFF3A5F9A),
+    const Color(0xFF1A3A6C),
   ];
 
   static List<Color> darkButtonGradient = [
-    Color.fromARGB(255, 13, 28, 60),
-    Color.fromARGB(255, 0, 21, 57)
+    const Color.fromARGB(255, 13, 28, 60),
+    const Color.fromARGB(255, 0, 21, 57)
   ];
 
   static List<Color> darkipoCardBackgroundGradient = [
-    Color.fromARGB(255, 15, 20, 31),
-    Color.fromARGB(255, 4, 12, 24)
+    const Color.fromARGB(255, 15, 20, 31),
+    const Color.fromARGB(255, 4, 12, 24)
   ];
 
   static List<Color> lightipoCardBackgroundGradient = [
-    Color(0xFFFFFFFF),
-    Color(0xFFF0F4F8),
+    const Color(0xFFFFFFFF),
+    const Color(0xFFF0F4F8),
   ];
 }

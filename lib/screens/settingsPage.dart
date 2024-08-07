@@ -5,9 +5,11 @@ import 'package:intl/intl.dart';
 import '../getIPOs.dart';
 import '../theme.dart';
 import 'package:provider/provider.dart';
-import '../theme_provider.dart';
+import '../providers.dart';
 
 class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
@@ -16,6 +18,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool isDarkMode = ConstManager.dark;
   String selectedLanguage = ConstManager.userLang;
   String selectedMarket = ConstManager.market;
+  bool settingsChanged = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +28,58 @@ class _SettingsPageState extends State<SettingsPage> {
         appBar: TheAppBar(
           title: "Settings",
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                if (settingsChanged == true ||
+                    isDarkMode != ConstManager.dark) {
+                  // show dialog
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Save Changes?'),
+                          content: const Text(
+                              'Do you want to save your changes before exiting?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Cancel',
+                                  style: TextStyle(
+                                    color: Color(0xFF3A5F9A),
+                                  )),
+                            ),
+                            TextButton(
+                              child: const Text('Save',
+                                  style: TextStyle(
+                                    color: Color(0xFF3A5F9A),
+                                  )),
+                              onPressed: () async {
+                                ConstManager.saveSettings();
+                                if (!isCookiesValid()) {
+                                  await getCookies();
+                                }
+
+                                if (settingsChanged == true) {
+                                  await fetchIPOs();
+                                }
+                                // update colors
+                                themeProvider.makeDark(isDarkMode);
+                                ConstManager.dark = isDarkMode;
+
+                                // navigate to home and return (settingsChanged);
+                                Navigator.of(context)
+                                    .popUntil((route) => route.isFirst);
+                              },
+                            ),
+                          ],
+                        );
+                      });
+                } else {
+                  Navigator.of(context).pop(settingsChanged);
+                }
+              }),
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -41,7 +93,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           child: SafeArea(
             child: ListView(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               children: [
                 _buildSettingsCard(
                   context,
@@ -59,7 +111,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 _buildSettingsCard(
                   context,
                   title: 'Language',
@@ -71,6 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       items: ['English', 'Arabic'],
                       onChanged: (value) {
                         setState(() {
+                          settingsChanged = true;
                           selectedLanguage = value!;
                           ConstManager.userLang = value;
                         });
@@ -78,7 +131,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 _buildSettingsCard(
                   context,
                   title: 'IPOs',
@@ -97,6 +150,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ],
                       onChanged: (value) {
                         setState(() {
+                          settingsChanged = true;
                           selectedMarket = value!;
                           ConstManager.market = value;
                         });
@@ -108,6 +162,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       selectedDate: ConstManager.fromDate,
                       onDateChanged: (value) {
                         setState(() {
+                          settingsChanged = true;
                           ConstManager.fromDate = value;
                         });
                       },
@@ -118,31 +173,42 @@ class _SettingsPageState extends State<SettingsPage> {
                       selectedDate: ConstManager.toDate,
                       onDateChanged: (value) {
                         setState(() {
+                          settingsChanged = true;
                           ConstManager.toDate = value;
                         });
                       },
-                      lastDate: DateTime.now().add(Duration(days: 3650)),
+                      lastDate: DateTime.now().add(const Duration(days: 3650)),
                     ),
                   ],
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 MyButton(
-                  child: Text(
-                    'Save',
-                    style: TextStyle(color: Colors.white, fontSize: 26),
-                  ),
                   height: 70,
                   onPressed: () async {
                     ConstManager.saveSettings();
-                    if (!isCookiesValid()) await getCookies();
-                    await fetchIPOs();
+                    if (!isCookiesValid()) {
+                      await getCookies();
+                    }
 
+                    if (settingsChanged == true) {
+                      await fetchIPOs();
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          backgroundColor: const Color(0xFF4CAF50),
+                          content: Text('Settings saved and IPOs updated',
+                              style: Theme.of(context).textTheme.bodyMedium)),
+                    );
                     // update colors
                     themeProvider.makeDark(isDarkMode);
                     ConstManager.dark = isDarkMode;
 
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(settingsChanged);
                   },
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(color: Colors.white, fontSize: 26),
+                  ),
                 ),
               ],
             ),
@@ -165,8 +231,8 @@ class _SettingsPageState extends State<SettingsPage> {
         children: [
           Padding(
             padding: note != null
-                ? EdgeInsets.fromLTRB(16, 16, 16, 4)
-                : EdgeInsets.all(16),
+                ? const EdgeInsets.fromLTRB(16, 16, 16, 4)
+                : const EdgeInsets.all(16),
             child: Text(
               title,
               style: Theme.of(context).textTheme.headlineMedium,
@@ -174,7 +240,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           if (note != null)
             Padding(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
               child: Text(
                 note,
                 style: Theme.of(context).textTheme.bodySmall,
@@ -256,6 +322,7 @@ class _SettingsPageState extends State<SettingsPage> {
         );
         if (picked != null && picked != selectedDate) {
           onDateChanged(picked);
+          setState(() {});
         }
       },
     );
