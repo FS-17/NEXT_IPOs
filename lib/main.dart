@@ -8,17 +8,13 @@ import 'getIPOs.dart';
 import 'theme.dart';
 import 'package:provider/provider.dart';
 import 'providers.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await cashHelper.Init();
   ConstManager.getSettings();
-
-  if (!isCookiesValid()) {
-    await getCookies();
-  }
-  await fetchIPOs();
 
   runApp(
     ChangeNotifierProvider(
@@ -39,9 +35,112 @@ class MyApp extends StatelessWidget {
         title: 'NEXT IPO',
         themeMode: ConstManager.dark ? ThemeMode.dark : ThemeMode.light,
         theme: themeProvider.currentTheme,
-        home: const IPOListScreen(),
+        home: const InternetCheckScreen(),
       );
     });
+  }
+}
+
+class InternetCheckScreen extends StatefulWidget {
+  const InternetCheckScreen({super.key});
+
+  @override
+  _InternetCheckScreenState createState() => _InternetCheckScreenState();
+}
+
+class _InternetCheckScreenState extends State<InternetCheckScreen> {
+  bool _isLoading = true;
+  bool _hasInternet = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkInternetAndLoadData();
+  }
+
+  Future<void> _checkInternetAndLoadData() async {
+    setState(() => _isLoading = true);
+
+// check if user has internet connection
+    final List<ConnectivityResult> result =
+        await Connectivity().checkConnectivity();
+    if (result.contains(ConnectivityResult.none)) {
+      _hasInternet = false;
+    } else {
+      _hasInternet = true;
+    }
+
+    if (_hasInternet) {
+      await _loadData();
+    }
+
+    setState(() => _isLoading = false);
+  }
+
+  Future<void> _loadData() async {
+    if (!isCookiesValid()) {
+      await getCookies();
+    }
+    await fetchIPOs();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_hasInternet) {
+      return const IPOListScreen();
+    }
+
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: const TheAppBar(title: "NEXT IPO"),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: Theme.of(context).brightness == Brightness.light
+                ? AppTheme.lightBackgroundGradient
+                : AppTheme.darkBackgroundGradient,
+          ),
+        ),
+        child: Center(
+          child: _isLoading
+              ? SizedBox(
+                  width: 60,
+                  height: 60,
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).colorScheme.secondary,
+                    ),
+                    strokeWidth: 4,
+                  ),
+                )
+              : !_hasInternet
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.wifi_off,
+                          size: 64,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          'No internet connection',
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        const SizedBox(height: 20),
+                        MyButton(
+                          onPressed: _checkInternetAndLoadData,
+                          child: const Text('Retry'),
+                          width: 150,
+                        ),
+                      ],
+                    )
+                  : const IPOListScreen(),
+        ),
+      ),
+    );
   }
 }
 

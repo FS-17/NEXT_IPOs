@@ -44,6 +44,7 @@ class ConstManager {
           DateTime.parse(cashHelper.getData(key: "lastTimeGetCookies"));
       fullCookie = cashHelper.getData(key: "fullCookie");
       fullUrl = cashHelper.getData(key: "fullUrl");
+      dark = cashHelper.getData(key: "dark");
     } catch (e) {
       if (userid == "") {
         userid = const Uuid().v1();
