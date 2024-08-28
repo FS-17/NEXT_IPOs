@@ -24,9 +24,9 @@ NEXT IPO is a Flutter application designed to track and display information abou
 We have created a video demonstration that showcases the app and how it works. 
 
 
-<video  height="370" controls align="center" width="100%">
-  <source src="assets/NEXTIPOsVideo.mp4" type="video/mp4">
-</video>
+<p align="center" width="100%">
+<img src="assets/NEXTIPOsVideo.gif" alt="drawing" width="200"/>
+</p>
 
 [Link of the video](assets/NEXTIPOsVideo.mp4)
 
