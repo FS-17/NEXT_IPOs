@@ -90,6 +90,10 @@ We have created a video demonstration that showcases the app and how it works.
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## Disclaimer
+
+This project is for educational purposes only. It is not intended for commercial use or as financial advice.
+
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
